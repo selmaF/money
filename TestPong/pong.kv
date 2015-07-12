@@ -39,6 +39,7 @@
         id: pong_ball
         center: self.parent.center
 
+
     PongPaddle:
         id: player_left
         center_x: root.width * 1/100 + self.width/2
@@ -52,9 +53,12 @@
 <PongBall>:
     size: 50,50
     canvas:
+        Color:
+            rgb:(1, 0.2, 0.2)
         Ellipse:
             pos: self.pos
             size: self.size
+
 
 <PongPaddle>:
     size: 25,200

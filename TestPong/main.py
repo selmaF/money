@@ -14,6 +14,7 @@ class PongGame(Widget):
     winPoint = 6  
     
     def serve_ball(self):
+
         self.ball.center = self.center
         self.ball.velocity = Vector(6,0).rotate(randint(0,360))
     
