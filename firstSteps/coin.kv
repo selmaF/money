@@ -1,0 +1,27 @@
+#:kivy 1.9.0
+
+<Coin>:
+    size_hint: None, None
+    size: 50,50
+    canvas:
+        Color:
+            rgb: 0,1,1
+        Ellipse:
+            pos: self.pos
+            size: self.size
+            source: 'kivy.png'
+    Label:
+        size: 50,10
+        pos: root.x,root.y+35
+        text: str(root.counter)
+
+
+
+<Game>:
+    canvas:
+        Color:
+            rgb: 0,0.2,0
+        Rectangle:
+            size: self.size
+            pos: self.pos
+

@@ -1,0 +1,20 @@
+#:kivy 1.9.0
+
+<Coin>:
+    size: 50, 50
+    canvas:
+        Ellipse:
+            pos: self.pos
+            size: self.size
+            source: 'kivy.png'
+
+
+<CoinGame>:
+    canvas:
+        Rectangle:
+            pos: self.center_x, self.center_y
+
+    Coin:
+        id: player_left
+        x: root.x
+        center_y: root.center_y
