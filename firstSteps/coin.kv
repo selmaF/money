@@ -2,20 +2,32 @@
 
 <Coin>:
     size_hint: None, None
-    size: 50,50
+    size: 70,70
     canvas:
         Color:
-            rgb: 0,1,1
+            rgb: 0,0.6,0.6
         Ellipse:
             pos: self.pos
             size: self.size
             source: 'kivy.png'
     Label:
         size: 50,10
-        pos: root.x,root.y+35
-        text: str(root.counter)
+        pos: root.center_x,root.center_y
+        text: str(root.worth)
 
 
+
+<Goal>:
+    canvas:
+        Color:
+            rgba: 0.2,0.2,0.2,0.6
+        Rectangle:
+            size: (self.size[0], self.size[1]/3)
+            pos: self.pos
+        Color:
+            rgb: 1,1,1
+        Line:
+            rectangle: self.x+2,self.y+2,self.width-2,(self.size[1]/3)-2
 
 <Game>:
     canvas:
@@ -24,4 +36,13 @@
         Rectangle:
             size: self.size
             pos: self.pos
+
+    Goal:
+        id: goal_id
+        #size: (self.size[0], self.size[1]/3)
+
+
+
+
+
 
