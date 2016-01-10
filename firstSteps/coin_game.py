@@ -9,7 +9,7 @@ from kivy.clock import Clock
 
 
 
-Window.size = (768, 1024)
+Window.size = (768, 924)
 
 
 class Goal(Widget):
@@ -29,7 +29,7 @@ class Coin(Widget):
 
         self.worth = coin_worthes[random_coin]#.get(1,'not found')#randint(1,8)
         self.size = self.size[0]*(posible_coins.get(coin_worthes[random_coin])), self.size[1]*(posible_coins.get(coin_worthes[random_coin]))
-        print posible_coins.get(coin_worthes[random_coin],1)
+        #print posible_coins.get(coin_worthes[random_coin],1)
         return self
 
 
@@ -39,6 +39,7 @@ class Game(RelativeLayout):
     selected = ObjectProperty(None)
     sel = BooleanProperty(False)
     coins = ListProperty()
+    sum = NumericProperty(0)
 
 
 # toDo create random Coins but not on the Borders and no self Intersection
@@ -62,14 +63,17 @@ class Game(RelativeLayout):
         self.coins = generated_coins
 
 
-
-
+    def sum_coins_welth(self):
+        worth = 0
+        for coin in self.coins:
+            if coin.collide_widget(self.ids.goal_id):
+                worth += coin.worth
+        return worth
 
 
     def on_touch_down(self, touch):
         for child in self.coins:
             if child.collide_point(*touch.pos):
-                print child.id
                 self.selected = child
                 self.sel = True
                 with self.canvas:
@@ -91,11 +95,15 @@ class Game(RelativeLayout):
             self.canvas.remove(touch.ud['line'])
             child = self.selected
             child.center = touch.pos
-            #print self.ids
+            self.ids.sum_id.text = str(self.sum_coins_welth())
+
             with self.canvas:
                 touch.ud['line']=Line(rectangle=(child.x-5,child.y-5,child.width+10,child.height+10),width=1, dash_length=5,dash_offset=2)
 
+
+
     def on_touch_up(self, touch):
+
         if self.sel == True:
             self.canvas.remove(touch.ud['line'])
             self.sel = False
