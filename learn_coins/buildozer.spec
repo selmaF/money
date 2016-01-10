@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = My Application
+title = EuroCoins
 
 # (str) Package name
-package.name = myapp
+package.name = Coin_Counting
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.test
@@ -25,11 +25,11 @@ source.include_exts = py,png,jpg,kv,atlas
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version.regex = __version__ = ['"](.*)['"]
-version.filename = %(source.dir)s/main.py
+#version.regex = __version__ = ['"](.*)['"]
+#version.filename = %(source.dir)s/main.py
 
 # (str) Application versioning (method 2)
-# version = 1.2.0
+version = 0.1.1
 
 # (list) Application requirements
 # comma seperated e.g. requirements = sqlite3,kivy
@@ -144,7 +144,7 @@ fullscreen = 1
 [buildozer]
 
 # (int) Log level (0 = error only, 1 = info, 2 = debug (with command output))
-log_level = 1
+log_level = 2
 
 # (int) Display warning if buildozer is run as root (0 = False, 1 = True)
 warn_on_root = 1
