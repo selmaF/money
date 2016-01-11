@@ -119,7 +119,7 @@ class Game(RelativeLayout):
             child.center = touch.pos
 
             #self.ids.sum_id.text = str(self.sum_coins_welth())
-            self.ids.sum_id.text = str(self.selected.tmp_vec)
+            self.ids.sum_id.text = str(self.selected.vel)
 
             with self.canvas:
                 touch.ud['line']=Line(rectangle=(child.x-5,child.y-5,child.width+10,child.height+10),width=1, dash_length=5,dash_offset=2)
@@ -130,7 +130,7 @@ class Game(RelativeLayout):
 
         if self.sel == True:
             self.canvas.remove(touch.ud['line'])
-            self.selected.vec = self.selected.tmp_vec
+            self.selected.vel = self.selected.tmp_vec
             self.sel = False
 
 
