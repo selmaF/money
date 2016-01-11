@@ -7,7 +7,7 @@ from random import random, randint
 from kivy.core.window import Window
 from kivy.clock import Clock
 
-
+#test commit als Maike
 
 #Window.size = (768, 924)
 
