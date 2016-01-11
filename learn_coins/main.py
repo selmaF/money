@@ -5,6 +5,8 @@ from kivy.graphics import Line, Color
 from kivy.properties import (ObjectProperty, BooleanProperty, NumericProperty, ListProperty)
 from random import random, randint
 from kivy.core.window import Window
+from kivy.vector import Vector as Vec
+
 from kivy.clock import Clock
 
 
@@ -21,6 +23,8 @@ class Goal(Widget):
 class Coin(Widget):
     counter = NumericProperty()
     worth = NumericProperty()
+    vel = ListProperty()
+    tmp_vec = ListProperty()
 
     def set_coin(self):
         coin_worthes = [1,2,5,10,20,50,100,200]
@@ -29,7 +33,7 @@ class Coin(Widget):
 
         self.worth = coin_worthes[random_coin]#.get(1,'not found')#randint(1,8)
         self.size = self.size[0]*(posible_coins.get(coin_worthes[random_coin])), self.size[1]*(posible_coins.get(coin_worthes[random_coin]))
-        #print posible_coins.get(coin_worthes[random_coin],1)
+        self.vel = [0,0]#[randint(1,5), randint(1,5)]
         return self
 
 
@@ -42,7 +46,7 @@ class Game(RelativeLayout):
     sum = NumericProperty(0)
 
 
-# toDo create random Coins but not on the Borders and no self Intersection
+# toDo create random Coins but not on the Borders and no self Intersection, Scale Coins to Image Resolution
 
     def generate_random_coins(self):
         generated_coins = []
@@ -71,6 +75,23 @@ class Game(RelativeLayout):
         return worth
 
 
+
+    def update(self,dt):
+        for coin in self.coins:
+            if coin.pos[0] <= 0 or coin.pos[0] >= Window.size[0]-coin.size[0]:
+                coin.vel[0] *= -1
+            if coin.pos[1] <= 0 or coin.pos[1] >= Window.size[1]-coin.size[1]:
+                coin.vel[1] *= -1
+
+        for coin in self.coins:
+            coin.pos = Vec(coin.vel) + Vec(coin.pos)
+
+
+
+
+
+
+
     def on_touch_down(self, touch):
         for child in self.coins:
             if child.collide_point(*touch.pos):
@@ -94,8 +115,11 @@ class Game(RelativeLayout):
         if self.sel == True:
             self.canvas.remove(touch.ud['line'])
             child = self.selected
+            child.tmp_vec = Vec(child.pos) - Vec(touch.pos)
             child.center = touch.pos
-            self.ids.sum_id.text = str(self.sum_coins_welth())
+
+            #self.ids.sum_id.text = str(self.sum_coins_welth())
+            self.ids.sum_id.text = str(self.selected.tmp_vec)
 
             with self.canvas:
                 touch.ud['line']=Line(rectangle=(child.x-5,child.y-5,child.width+10,child.height+10),width=1, dash_length=5,dash_offset=2)
@@ -106,7 +130,9 @@ class Game(RelativeLayout):
 
         if self.sel == True:
             self.canvas.remove(touch.ud['line'])
+            self.selected.vec = self.selected.tmp_vec
             self.sel = False
+
 
 
 class CoinApp(App):
@@ -114,7 +140,7 @@ class CoinApp(App):
         self.title = 'Widget Selection'
         game = Game()
         game.generate_random_coins()
-        #Clock.schedule_interval(game.update, 1.0/60)
+        Clock.schedule_interval(game.update, 1.0/60)
         return game
 
 
