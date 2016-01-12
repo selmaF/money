@@ -11,7 +11,7 @@ from kivy.clock import Clock
 
 #test commit als Maike
 
-#Window.size = (768, 924)
+Window.size = (768, 924)
 
 
 class Goal(Widget):
@@ -26,13 +26,13 @@ class Coin(Widget):
     vel = ListProperty()
     tmp_vec = ListProperty()
 
-    def set_coin(self):
+    def set_coin(self, size):
         coin_worthes = [1,2,5,10,20,50,100,200]
         posible_coins = {1 : 0.7, 2 : 0.75, 5 : 0.8, 10 : 0.7, 20 : 0.75, 50 : 1.0, 100 : 0.93, 200 : 1.09}
         random_coin = randint(0, 7)
 
         self.worth = coin_worthes[random_coin]#.get(1,'not found')#randint(1,8)
-        self.size = self.size[0]*(posible_coins.get(coin_worthes[random_coin])), self.size[1]*(posible_coins.get(coin_worthes[random_coin]))
+        self.size = (size/12)*(posible_coins.get(coin_worthes[random_coin])), (size/12)*(posible_coins.get(coin_worthes[random_coin]))
         self.vel = [0,0]#[randint(1,5), randint(1,5)]
         return self
 
@@ -57,7 +57,7 @@ class Game(RelativeLayout):
             #coinPos = int(random()*Window.size[0])+(coin.size[0]/2), int(random()*Window.size[1]/3.5+(coin.size[1]/2))
             coin_pos_X = randint(coin.size[0],Window.size[0]-coin.size[0])
             coin_pos_Y = randint(coin.size[0], int(Window.size[1]/3.5-(coin.size[1])))
-            coin.set_coin()
+            coin.set_coin(Window.size[0])
             coin.center = coin_pos_X, coin_pos_Y
             coin.counter = self.counter
             generated_coins.append(coin)
@@ -78,14 +78,19 @@ class Game(RelativeLayout):
 
     def update(self,dt):
         for coin in self.coins:
-            if coin.pos[0] <= 0 or coin.pos[0] >= Window.size[0]-coin.size[0]:
+            if coin.pos[0] <= 0 and coin.vel[0] < 0:
                 coin.vel[0] *= -1
-            if coin.pos[1] <= 0 or coin.pos[1] >= Window.size[1]-coin.size[1]:
+            if coin.pos[0] >= Window.size[0]-coin.size[0] and coin.vel[0] > 0:
+                coin.vel[0] *= -1
+            if coin.pos[1] <= 0 and coin.vel[1] < 0:
+                coin.vel[1] *= -1
+            if coin.pos[1] >= Window.size[1]-coin.size[1] and coin.vel[1] > 0:
                 coin.vel[1] *= -1
 
         for coin in self.coins:
             coin.pos = Vec(coin.vel) + Vec(coin.pos)
             coin.vel = Vec(coin.vel) *0.87
+            self.ids.sum_id.text = str(self.sum_coins_welth())
 
 
 
