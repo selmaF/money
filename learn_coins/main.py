@@ -9,9 +9,7 @@ from kivy.vector import Vector as Vec
 
 from kivy.clock import Clock
 
-#test commit als Maike
-
-Window.size = (768, 924)
+#Window.size = (768, 924)
 
 
 class Goal(Widget):
