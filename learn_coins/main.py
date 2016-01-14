@@ -6,8 +6,21 @@ from kivy.properties import (ObjectProperty, BooleanProperty, NumericProperty, L
 from random import random, randint
 from kivy.core.window import Window
 from kivy.vector import Vector as Vec
-
 from kivy.clock import Clock
+from kivy.utils import platform
+
+extra_packages = 0
+
+try:
+    from plyer import vibrator
+    extra_packages = 1
+except ImportError:
+    print 'Not all Packages are installed on Pc'
+
+
+
+
+
 
 #Window.size = (768, 924)
 
@@ -30,7 +43,7 @@ class Coin(Widget):
         random_coin = randint(0, 7)
 
         self.worth = coin_worthes[random_coin]#.get(1,'not found')#randint(1,8)
-        self.size = (size/12)*(posible_coins.get(coin_worthes[random_coin])), (size/12)*(posible_coins.get(coin_worthes[random_coin]))
+        self.size = (size/6)*(posible_coins.get(coin_worthes[random_coin])), (size/6)*(posible_coins.get(coin_worthes[random_coin]))
         self.vel = [0,0]#[randint(1,5), randint(1,5)]
         return self
 
@@ -54,7 +67,7 @@ class Game(RelativeLayout):
             proxy_coin_size = coin.size * 2
             #coinPos = int(random()*Window.size[0])+(coin.size[0]/2), int(random()*Window.size[1]/3.5+(coin.size[1]/2))
             coin_pos_X = randint(coin.size[0],Window.size[0]-coin.size[0])
-            coin_pos_Y = randint(coin.size[0], int(Window.size[1]/3.5-(coin.size[1])))
+            coin_pos_Y = randint(coin.size[0], int(Window.size[1]/1.5-(coin.size[1])))
             coin.set_coin(Window.size[0])
             coin.center = coin_pos_X, coin_pos_Y
             coin.counter = self.counter
@@ -78,12 +91,20 @@ class Game(RelativeLayout):
         for coin in self.coins:
             if coin.pos[0] <= 0 and coin.vel[0] < 0:
                 coin.vel[0] *= -1
+                if platform == 'android':
+                    vibrator.vibrate(0.1)
             if coin.pos[0] >= Window.size[0]-coin.size[0] and coin.vel[0] > 0:
                 coin.vel[0] *= -1
+                if platform == 'android':
+                    vibrator.vibrate(0.1)
             if coin.pos[1] <= 0 and coin.vel[1] < 0:
                 coin.vel[1] *= -1
+                if platform == 'android':
+                    vibrator.vibrate(0.1)
             if coin.pos[1] >= Window.size[1]-coin.size[1] and coin.vel[1] > 0:
                 coin.vel[1] *= -1
+                if platform == 'android':
+                    vibrator.vibrate(0.1)
 
         for coin in self.coins:
             coin.pos = Vec(coin.vel) + Vec(coin.pos)
@@ -102,6 +123,7 @@ class Game(RelativeLayout):
             if child.collide_point(*touch.pos):
                 self.selected = child
                 self.sel = True
+                    #print 'ahha'
                 with self.canvas:
                     Color(0,0,0)
                     touch.ud['line'] = Line(rectangle=(child.x-5,child.y-5,child.width+10,child.height+10), dash_length=5, dash_offset=2)

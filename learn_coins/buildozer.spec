@@ -29,11 +29,11 @@ source.include_exts = py,png,jpg,kv,atlas
 #version.filename = %(source.dir)s/main.py
 
 # (str) Application versioning (method 2)
-version = 0.1.1.3
+version = 0.1.1.8
 
 # (list) Application requirements
 # comma seperated e.g. requirements = sqlite3,kivy
-requirements = kivy
+requirements = kivy,plyer
 
 # (list) Garden requirements
 #garden_requirements =
@@ -56,7 +56,7 @@ fullscreen = 1
 #
 
 # (list) Permissions
-#android.permissions = INTERNET
+android.permissions = VIBRATE
 
 # (int) Android API to use
 #android.api = 14
