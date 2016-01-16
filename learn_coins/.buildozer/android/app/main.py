@@ -18,15 +18,9 @@ except ImportError:
     print 'Not all Packages are installed on Pc'
 
 
-# toDo create StartScreen, SettingScreen, switch Screens /rodstar97
-# toDo create random Coins but not on the Borders and no self Intersection /Selma
-# toDo Scale Coins to Image Resolution
-# toDo  Coin dynamics with other coins
-# toDo optional Gyroscope, Sounds & Adds
 
 
-class StartScreen(Widget):
-    pass
+
 
 #Window.size = (768, 924)
 
@@ -63,13 +57,15 @@ class Game(RelativeLayout):
     sum = NumericProperty(0)
 
 
-
+# toDo create random Coins but not on the Borders and no self Intersection, Scale Coins to Image Resolution
 
     def generate_random_coins(self):
         generated_coins = []
         for i in range(12):
             self.counter += 1
             coin = Coin()
+            proxy_coin_size = coin.size * 2
+            #coinPos = int(random()*Window.size[0])+(coin.size[0]/2), int(random()*Window.size[1]/3.5+(coin.size[1]/2))
             coin_pos_X = randint(coin.size[0],Window.size[0]-coin.size[0])
             coin_pos_Y = randint(coin.size[0], int(Window.size[1]/1.5-(coin.size[1])))
             coin.set_coin(Window.size[0])
@@ -80,12 +76,6 @@ class Game(RelativeLayout):
         for coin in generated_coins:
             self.add_widget(coin)
         self.coins = generated_coins
-
-
-    def android_vibration(self):
-        if extra_packages == 1:
-            if platform == 'android':
-                vibrator.vibrate(0.1)
 
 
     def sum_coins_welth(self):
@@ -101,16 +91,20 @@ class Game(RelativeLayout):
         for coin in self.coins:
             if coin.pos[0] <= 0 and coin.vel[0] < 0:
                 coin.vel[0] *= -1
-                self.android_vibration()
+                if platform == 'android':
+                    vibrator.vibrate(0.1)
             if coin.pos[0] >= Window.size[0]-coin.size[0] and coin.vel[0] > 0:
                 coin.vel[0] *= -1
-                self.android_vibration()
+                if platform == 'android':
+                    vibrator.vibrate(0.1)
             if coin.pos[1] <= 0 and coin.vel[1] < 0:
                 coin.vel[1] *= -1
-                self.android_vibration()
+                if platform == 'android':
+                    vibrator.vibrate(0.1)
             if coin.pos[1] >= Window.size[1]-coin.size[1] and coin.vel[1] > 0:
                 coin.vel[1] *= -1
-                self.android_vibration()
+                if platform == 'android':
+                    vibrator.vibrate(0.1)
 
         for coin in self.coins:
             coin.pos = Vec(coin.vel) + Vec(coin.pos)
