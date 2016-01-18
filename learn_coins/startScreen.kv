@@ -1,0 +1,138 @@
+# File name: startScreen.kv
+#:import RiseInTransition kivy.uix.screenmanager.RiseInTransition
+#:import App kivy.app.App
+
+
+
+
+
+
+<CoinButton@Button>:
+    font_size: 20
+
+
+
+<GameScreen>:
+    name: 'GameScreen'
+    gameAudio: gameAudio
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text:'Difficulty:'
+        Label:
+            id: gameAudio
+            text: 'Audio:'
+        Label:
+            text: 'Mobile Settings:'
+        Button:
+            text: 'back to StartScreen'
+            on_press: root.manager.current = 'StartScreen'
+
+
+
+<SettingsScreen>:
+    name: 'SettingsScreen'
+    BoxLayout:
+        size_hint: 0.7, 0.7
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        orientation: 'vertical'
+        Accordion:
+            orientation: 'vertical'
+
+            AccordionItem:
+                title: 'Game difficulty'
+                Label:
+                    text: 'test'
+            AccordionItem:
+                title: 'Audio'
+                BoxLayout:
+                    size_hint: 1, 0.5
+                    pos_hint: {'top': 1}
+                    orientation: 'vertical'
+                    BoxLayout:
+                        size_hint: 0.8, 0.3
+                        orientation: 'horizontal'
+                        Label:
+                            text: 'SoundFx'
+                        Switch:
+                            id: soundfx
+                            active: False
+                    BoxLayout:
+                        size_hint: 0.8, 0.3
+                        orientation: 'horizontal'
+                        Label:
+                            text: 'Music'
+                        Switch:
+                            id: sound
+                            active: False
+
+            AccordionItem:
+                title: 'Mobile Settings'
+                BoxLayout:
+                    size_hint: 1, 0.5
+                    pos_hint: {'top': 1}
+                    orientation: 'vertical'
+                    BoxLayout:
+                        size_hint: 0.8, 0.3
+                        orientation: 'horizontal'
+                        Label:
+                            text: 'Vibration'
+                        Switch:
+                            active: False
+                            id: vibration
+                    BoxLayout:
+                        size_hint: 0.8, 0.3
+                        orientation: 'horizontal'
+                        Label:
+                            halign: 'left'
+                            text: 'Gyro'
+                        Switch:
+                            id: giro
+                            active: False
+
+
+        Button:
+            text: 'Back'
+            size_hint: 1, 0.2
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            on_press: root.manager.current = 'StartScreen'
+
+
+
+
+
+
+<StartScreen>:
+    name: 'StartScreen'
+    canvas:
+        Color:
+            rgb: 1,1,1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+            source: 'textures/Wood.jpg'
+    BoxLayout:
+        orientation: 'vertical'
+        #size: root.size[0]*0.7, root.size[1]*0.4
+        size_hint: 0.7, 0.4
+        #pos: root.size[0]*0.15, root.size[1]*0.3
+        #spacing: (root.size[1]/20)
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        CoinButton:
+            text: 'Start game'
+            on_press: root.manager.current = 'GameScreen'
+        CoinButton:
+            text: 'Settings'
+            on_press: root.manager.current = 'SettingsScreen'
+
+
+        CoinButton:
+            text: 'Quit game'
+            on_press: App.get_running_app().stop()
+
+
+
+<ChangeScreens>:
+    StartScreen:
+    GameScreen:
+    SettingsScreen:
