@@ -3,7 +3,7 @@
 #:import App kivy.app.App
 
 
-
+#:kivy 1.9.0
 
 
 
@@ -14,15 +14,17 @@
 
 <GameScreen>:
     name: 'GameScreen'
-    gameAudio: gameAudio
+    #settings_audio_sounfx: root.manager.get_screen('SettingsScreen').ids['soundfx']
     BoxLayout:
         orientation: 'vertical'
         Label:
+            id: gameDiff
             text:'Difficulty:'
         Label:
             id: gameAudio
             text: 'Audio:'
         Label:
+            id: gameMobile
             text: 'Mobile Settings:'
         Button:
             text: 'back to StartScreen'
@@ -41,8 +43,30 @@
 
             AccordionItem:
                 title: 'Game difficulty'
-                Label:
-                    text: 'test'
+                BoxLayout:
+                    spacing: 10
+                    orientation: 'vertical'
+                    size_hint: 1, 0.3
+                    pos_hint: {'top': 0.7}
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        size_hint: 1, 0.2
+                        pos_hint: {'y':0.1}
+                        Label:
+                            text: 'Easy'
+                        Label:
+                            text: 'Middle'
+                        Label:
+                            text: 'Hard'
+                        Label:
+                            text: 'Very hard'
+                    Slider:
+                        size_hint: 1, 0.3
+                        pos_hint: {'top': 1}
+                        id: sl_diff
+                        min: 0
+                        max: 3
+                        step: 1
             AccordionItem:
                 title: 'Audio'
                 BoxLayout:
@@ -63,7 +87,7 @@
                         Label:
                             text: 'Music'
                         Switch:
-                            id: sound
+                            id: music
                             active: False
 
             AccordionItem:
@@ -78,26 +102,29 @@
                         Label:
                             text: 'Vibration'
                         Switch:
-                            active: False
                             id: vibration
+                            active: False
+
                     BoxLayout:
                         size_hint: 0.8, 0.3
                         orientation: 'horizontal'
                         Label:
-                            halign: 'left'
                             text: 'Gyro'
                         Switch:
-                            id: giro
+                            id: gyro
                             active: False
 
 
         Button:
             text: 'Back'
-            size_hint: 1, 0.2
+            size_hint: 1, 0.1
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             on_press: root.manager.current = 'StartScreen'
-
-
+        Button
+            text: 'Play'
+            size_hint: 1, 0.1
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            on_press: root.manager.current = 'GameScreen'
 
 
 
@@ -118,6 +145,7 @@
         #pos: root.size[0]*0.15, root.size[1]*0.3
         #spacing: (root.size[1]/20)
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
         CoinButton:
             text: 'Start game'
             on_press: root.manager.current = 'GameScreen'
@@ -133,6 +161,7 @@
 
 
 <ChangeScreens>:
+
     StartScreen:
     GameScreen:
     SettingsScreen:
