@@ -23,16 +23,15 @@ class StartScreen(Screen):
 
 
 class SettingsScreen(Screen):
-    def printhola(self):
-        print 'hola'
+    pass
 
 
 class GameScreen(Screen):
-    settings_game_difficulty = NumericProperty
-    settings_audio_sounfx = BooleanProperty
-    settings_audio_music = BooleanProperty
-    settings_mobile_vibration = BooleanProperty
-    settings_mobile_gyro = BooleanProperty
+    #settings_game_difficulty = NumericProperty
+    #settings_audio_sounfx = BooleanProperty
+    #settings_audio_music = BooleanProperty
+    #settings_mobile_vibration = BooleanProperty
+    #settings_mobile_gyro = BooleanProperty
 
 
     def on_enter(self):

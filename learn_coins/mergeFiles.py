@@ -1,15 +1,21 @@
+# File name: startScreen.py
+
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.widget import Widget
+from kivy.lang import Builder
+from kivy.core.window import Window
+from kivy.uix.screenmanager import  ScreenManager, Screen
 from kivy.uix.widget import Widget
 from kivy.uix.relativelayout import RelativeLayout
-from kivy.app import App
 from kivy.graphics import Line, Color
 from kivy.properties import (ObjectProperty, BooleanProperty, NumericProperty, ListProperty)
 from random import random, randint
-from kivy.core.window import Window
 from kivy.vector import Vector as Vec
 from kivy.clock import Clock
 from kivy.utils import platform
 
-extra_packages = 0
 
 try:
     from plyer import vibrator
@@ -18,17 +24,11 @@ except ImportError:
     print 'Not all Packages are installed on Pc'
 
 
-# toDo create StartScreen, SettingScreen, switch Screens /rodstar97
-# toDo create random Coins but not on the Borders and no self Intersection /Selma
-# toDo Scale Coins to Image Resolution
-# toDo  Coin dynamics with other coins
-# toDo optional Gyroscope, Sounds & Adds
 
+Window.size = (1440/3, 2560/3)
 
-
-
-#Window.size = (768, 924)
-
+Builder.load_file('startScreen.kv')
+#Builder.load_file('coin.kv')
 
 class Goal(Widget):
     pass
@@ -54,7 +54,7 @@ class Coin(Widget):
 
 
 
-class Game(RelativeLayout):
+class GameScreen(Screen):
     counter = NumericProperty(0)
     selected = ObjectProperty(None)
     sel = BooleanProperty(False)
@@ -165,29 +165,54 @@ class Game(RelativeLayout):
             self.selected.vel = self.selected.tmp_vec
             self.sel = False
 
+    def on_enter(self):
+        self.generate_random_coins()
 
 
-class CoinApp(App):
+
+
+
+
+
+class StartScreen(Screen):
+    pass
+
+
+class SettingsScreen(Screen):
+    pass
+
+
+
+
+
+
+'''
+    def on_enter(self):
+        settings_game_difficulty = self.parent.get_screen('SettingsScreen').ids['sl_diff'].value
+        self.ids.gameDiff.text = ('game difficulty:\n {0}'.format(settings_game_difficulty))
+
+        settings_audio_sounfx = self.parent.get_screen('SettingsScreen').ids['soundfx'].active
+        settings_audio_music = self.parent.get_screen('SettingsScreen').ids['music'].active
+
+        self.ids.gameAudio.text = 'gameAudio:\n soundfx = {0}\n music = {1}'.format(settings_audio_sounfx, settings_audio_music)
+
+        settings_mobile_vibration = self.parent.get_screen('SettingsScreen').ids['vibration'].active
+        settings_mobile_gyro = self.parent.get_screen('SettingsScreen').ids['gyro'].active
+
+        self.ids.gameMobile.text = 'gameMobile:\n vibration = {0}\n gyro = {1}'.format(settings_mobile_vibration, settings_mobile_gyro)
+'''
+
+
+class ChangeScreens(ScreenManager):
+    pass
+
+class StartScreenApp(App):
     def build(self):
-        self.title = 'Widget Selection'
-        game = Game()
-        game.generate_random_coins()
-        Clock.schedule_interval(game.update, 1.0/60)
-        return game
+        run = ChangeScreens()
+        #print run.get_screen('GameScreen').update
+        Clock.schedule_interval(run.get_screen('GameScreen').update, 1.0/60)
+        return run
 
 
 if __name__ == '__main__':
-    CoinApp().run()
-
-
-
-'''
-# Add first coin on middle spot with random offset
-self.counter += 1
-first_coin = Coin()
-first_coin_pos =int(Window.size[0]/2), int(Window.size[1]/3)
-print type(first_coin_pos)
-first_coin.center = first_coin_pos
-first_coin.counter = self.counter
-self.add_widget(first_coin)
-'''
+    StartScreenApp().run()
