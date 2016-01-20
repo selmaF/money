@@ -1,0 +1,101 @@
+# File name: settings_Screen.kv
+#:import RiseInTransition kivy.uix.screenmanager.RiseInTransition
+#:import App kivy.app.App
+
+
+#:kivy 1.9.0
+
+
+<SettingsScreen>:
+    name: 'SettingsScreen'
+    BoxLayout:
+        size_hint: 0.7, 0.7
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        orientation: 'vertical'
+        Accordion:
+            orientation: 'vertical'
+
+            AccordionItem:
+                title: 'Game difficulty'
+                BoxLayout:
+                    spacing: 10
+                    orientation: 'vertical'
+                    size_hint: 1, 0.3
+                    pos_hint: {'top': 0.7}
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        size_hint: 1, 0.2
+                        pos_hint: {'y':0.1}
+                        Label:
+                            text: 'Easy'
+                        Label:
+                            text: 'Middle'
+                        Label:
+                            text: 'Hard'
+                        Label:
+                            text: 'Very hard'
+                    Slider:
+                        size_hint: 1, 0.3
+                        pos_hint: {'top': 1}
+                        id: sl_diff
+                        min: 0
+                        max: 3
+                        step: 1
+            AccordionItem:
+                title: 'Audio'
+                BoxLayout:
+                    size_hint: 1, 0.5
+                    pos_hint: {'top': 1}
+                    orientation: 'vertical'
+                    BoxLayout:
+                        size_hint: 0.8, 0.3
+                        orientation: 'horizontal'
+                        Label:
+                            text: 'SoundFx'
+                        Switch:
+                            id: soundfx
+                            active: False
+                    BoxLayout:
+                        size_hint: 0.8, 0.3
+                        orientation: 'horizontal'
+                        Label:
+                            text: 'Music'
+                        Switch:
+                            id: music
+                            active: False
+
+            AccordionItem:
+                title: 'Mobile Settings'
+                BoxLayout:
+                    size_hint: 1, 0.5
+                    pos_hint: {'top': 1}
+                    orientation: 'vertical'
+                    BoxLayout:
+                        size_hint: 0.8, 0.3
+                        orientation: 'horizontal'
+                        Label:
+                            text: 'Vibration'
+                        Switch:
+                            id: vibration
+                            active: False
+
+                    BoxLayout:
+                        size_hint: 0.8, 0.3
+                        orientation: 'horizontal'
+                        Label:
+                            text: 'Gyro'
+                        Switch:
+                            id: gyro
+                            active: False
+
+
+        Button:
+            text: 'Back'
+            size_hint: 1, 0.1
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            on_press: root.manager.current = 'StartScreen'
+        Button
+            text: 'Play'
+            size_hint: 1, 0.1
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            on_press: root.manager.current = 'GameScreen'

@@ -1,6 +1,5 @@
 #!/bin/bash
-cd ~/money/learn_coins
-pwd
-git pull
+cd ~/Documents/PycharmProjects/money/learn_coins
+
 buildozer android debug deploy
-rsync -rtv ~/money/learn_coins/bin ~/Dropbox/kivy_money/Apps
+rsync -rtv ~/Documents/PycharmProjects/money/learn_coins/bin ~/Dropbox/kivy_money/Apps

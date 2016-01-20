@@ -1,0 +1,237 @@
+# File name: startScreen.kv
+#:import RiseInTransition kivy.uix.screenmanager.RiseInTransition
+#:import App kivy.app.App
+
+
+#:kivy 1.9.0
+
+
+
+<CoinButton@Button>:
+    font_size: 20
+
+
+
+
+
+
+<SettingsScreen>:
+    name: 'SettingsScreen'
+    BoxLayout:
+        size_hint: 0.7, 0.7
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        orientation: 'vertical'
+        Accordion:
+            orientation: 'vertical'
+
+            AccordionItem:
+                title: 'Game difficulty'
+                BoxLayout:
+                    spacing: 10
+                    orientation: 'vertical'
+                    size_hint: 1, 0.3
+                    pos_hint: {'top': 0.7}
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        size_hint: 1, 0.2
+                        pos_hint: {'y':0.1}
+                        Label:
+                            text: 'Easy'
+                        Label:
+                            text: 'Middle'
+                        Label:
+                            text: 'Hard'
+                        Label:
+                            text: 'Very hard'
+                    Slider:
+                        size_hint: 1, 0.3
+                        pos_hint: {'top': 1}
+                        id: sl_diff
+                        min: 0
+                        max: 3
+                        step: 1
+            AccordionItem:
+                title: 'Audio'
+                BoxLayout:
+                    size_hint: 1, 0.5
+                    pos_hint: {'top': 1}
+                    orientation: 'vertical'
+                    BoxLayout:
+                        size_hint: 0.8, 0.3
+                        orientation: 'horizontal'
+                        Label:
+                            text: 'SoundFx'
+                        Switch:
+                            id: soundfx
+                            active: False
+                    BoxLayout:
+                        size_hint: 0.8, 0.3
+                        orientation: 'horizontal'
+                        Label:
+                            text: 'Music'
+                        Switch:
+                            id: music
+                            active: False
+
+            AccordionItem:
+                title: 'Mobile Settings'
+                BoxLayout:
+                    size_hint: 1, 0.5
+                    pos_hint: {'top': 1}
+                    orientation: 'vertical'
+                    BoxLayout:
+                        size_hint: 0.8, 0.3
+                        orientation: 'horizontal'
+                        Label:
+                            text: 'Vibration'
+                        Switch:
+                            id: vibration
+                            active: False
+
+                    BoxLayout:
+                        size_hint: 0.8, 0.3
+                        orientation: 'horizontal'
+                        Label:
+                            text: 'Gyro'
+                        Switch:
+                            id: gyro
+                            active: False
+
+
+        Button:
+            text: 'Back'
+            size_hint: 1, 0.1
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            on_press: root.manager.current = 'StartScreen'
+        Button
+            text: 'Play'
+            size_hint: 1, 0.1
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            on_press: root.manager.current = 'GameScreen'
+
+
+
+
+<StartScreen>:
+    name: 'StartScreen'
+    canvas:
+        Color:
+            rgb: 1,1,1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+            source: 'textures/Wood.jpg'
+    BoxLayout:
+        orientation: 'vertical'
+        #size: root.size[0]*0.7, root.size[1]*0.4
+        size_hint: 0.7, 0.4
+        #pos: root.size[0]*0.15, root.size[1]*0.3
+        #spacing: (root.size[1]/20)
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+        CoinButton:
+            text: 'Start game'
+            on_press: root.manager.current = 'GameScreen'
+        CoinButton:
+            text: 'Settings'
+            on_press: root.manager.current = 'SettingsScreen'
+
+
+        CoinButton:
+            text: 'Quit game'
+            on_press: App.get_running_app().stop()
+
+
+## copy From Coin.kv
+
+
+<Widget>:
+    canvas.after:
+        Line:
+            rectangle: self.x+1,self.y+1,self.width-1,self.height-1
+            dash_offset: 5
+            dash_length: 3
+
+
+
+
+
+
+
+<Coin>:
+    size_hint: None, None
+    size: 120,120
+    canvas:
+        #Color:
+            #rgb: 1,1,1
+        Ellipse:
+            pos: self.pos
+            size: self.size
+            source: 'textures/{0}.png'.format(root.worth)
+
+    #Label:
+        #size: 50,10
+        #pos: root.center_x,root.center_y
+        #text: str(root.worth)
+
+
+
+<Goal>:
+    size_hint: None, None
+    #size: 70,70
+    canvas:
+        Color:
+            rgba: 0.2,0.2,0.2,0.6
+        Rectangle:
+            size: self.size#(root.size[0], root.size[1]/3)
+            pos: self.pos #(self.pos[0], (self.size[1]/3*2))
+        #Color:
+            #rgb: 1,1,1
+        #Line:
+            #rectangle: self.x+2,self.y+2,self.width-2,((self.size[1]/3)*2)-2
+    canvas.after:
+        Color:
+            rgb: 1,0,0
+        Line:
+            rectangle: self.x+1,self.y+1,self.width-1,self.height-1
+        Color:
+            rgb: 1,1,1
+
+
+
+<GameScreen>:
+    name: 'GameScreen'
+    RelativeLayout:
+        canvas:
+            Color:
+                rgb: 1,1,1#0,0.2,0
+            Rectangle:
+                size: self.size
+                pos: self.pos
+                source: 'textures/Wood.jpg'
+
+
+        Goal:
+            id: goal_id
+            size: (root.size[0], root.size[1]/3)
+            pos: (root.pos[0], (root.size[1]/3)*2 )
+
+        Label:
+            id: sum_id
+            text: "0.00  €"
+            font_size: 50
+            text_size: self.size
+            halign: 'left'
+            valign: 'top'
+    Button:
+        size_hint: 1,0.1
+        id: backButton
+        text: 'back'
+        on_press:
+            root.manager.current = 'StartScreen'
+
+<ChangeScreens>:
+
+    StartScreen:
+    GameScreen:
+    SettingsScreen:
