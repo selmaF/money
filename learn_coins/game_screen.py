@@ -20,8 +20,8 @@ from random import random, randint
 from kivy.vector import Vector as Vec
 from kivy.clock import Clock
 from kivy.utils import platform
-
-
+import numpy as np
+import math
 
 class Goal(Widget):
     pass
@@ -34,15 +34,26 @@ class Coin(Widget):
     worth = NumericProperty()
     vel = ListProperty()
     tmp_vec = ListProperty()
+    coin_matrix = np.zeros((Window.size[0],Window.size[0]),bool)
 
-    def set_coin(self, size):
+    def set_coin(self, size, pos):
         coin_worthes = [1,2,5,10,20,50,100,200]
         posible_coins = {1 : 0.7, 2 : 0.75, 5 : 0.8, 10 : 0.7, 20 : 0.75, 50 : 1.0, 100 : 0.93, 200 : 1.09}
         random_coin = randint(0, 7)
 
         self.worth = coin_worthes[random_coin]#.get(1,'not found')#randint(1,8)
-        self.size = (size/6)*(posible_coins.get(coin_worthes[random_coin])), (size/6)*(posible_coins.get(coin_worthes[random_coin]))
+        self.size = (size/6)*(posible_coins.get(self.worth)), (size/6)*(posible_coins.get(self.worth))
         self.vel = [0,0]#[randint(1,5), randint(1,5)]
+        max_coin_size = (size/6)*(posible_coins.get(max(coin_worthes))), (size/6)*(posible_coins.get(max(coin_worthes)))
+        radius = int((self.size[0]+max_coin_size[0])/2)
+        for i in range(pos[1]-radius, pos[1] + radius):
+            dis_vert = (float(i-pos[1]))/radius
+            alpha = np.arcsin((dis_vert))
+            cos = np.cos(alpha)
+            dis_hori = int(cos*radius)
+            self.coin_matrix[range(pos[0]-dis_hori, pos[0]+dis_hori), i] = 1
+        test = np.transpose(np.nonzero(self.coin_matrix))  #zum debuggen
+        test2 = self.coin_matrix                            # zum debuggen
         return self
 
 
@@ -55,16 +66,24 @@ class GameScreen(Screen):
     sum = NumericProperty(0)
 
 
-
-
     def generate_random_coins(self):
         generated_coins = []
+        table_matrix = np.zeros((Window.size[0], Window.size[1]),bool)
+        max_coin_size = 1.09*Window.size[0]/6                       #TODO connect with Variables in class method set_coin??
+        for i in range(0, Window.size[0]):
+            if (i < (max_coin_size/2)) or (i > (Window.size[0]-(max_coin_size/2))):
+                table_matrix [(i,range(0,int(Window.size[1])))] = 1
+            else:
+                table_matrix[(i, range(0, int(max_coin_size/2)))] = 1
+                table_matrix[(i, range(int(Window.size[1]-(max_coin_size/2)), Window.size[1]))] = 1
+
         for i in range(12):
             self.counter += 1
             coin = Coin()
             coin_pos_X = randint(coin.size[0],Window.size[0]-coin.size[0])
             coin_pos_Y = randint(coin.size[0], int(Window.size[1]/1.5-(coin.size[1])))
-            coin.set_coin(Window.size[0])
+            coin_pos = (coin_pos_X, coin_pos_Y)
+            coin.set_coin(Window.size[0], coin_pos)
             coin.center = coin_pos_X, coin_pos_Y
             coin.counter = self.counter
             generated_coins.append(coin)
