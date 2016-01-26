@@ -49,8 +49,7 @@ class Coin(Widget):
 class Matrix(ObjectProperty):
     def __init__(self, window_size):
         self.window_size = window_size
-        self.table = np.zeros((window_size[0], window_size[1]), bool)
-        self.coin = np.zeros((window_size[0], window_size[1]), bool)
+        self.coins = np.zeros((window_size[0], window_size[1]), bool)
         self.border = np.zeros((window_size[0], window_size[1]), bool)
         self.max_coin_size = int(np.ceil(1.09*window_size[0]/6))     #TO DO connect with Variables in class method set_coin??
 
@@ -58,7 +57,7 @@ class Matrix(ObjectProperty):
         self.border = np.zeros((self.window_size[0], self.window_size[1]), bool)
         for i in range(0, self.window_size[0]):
             if (i < (coin_size/2)) or (i > (self.window_size[0]-(coin_size/2))):
-                self.table[(i, range(0, int(self.window_size[1])))] = 1
+                self.border[(i, range(0, int(self.window_size[1])))] = 1
             else:
                 self.border[(i, range(0, int(coin_size/2)))] = 1
                 self.border[(i, range(int(self.window_size[1]*0.55), self.window_size[1]))] = 1
@@ -88,19 +87,18 @@ class Matrix(ObjectProperty):
             distance = int(np.cos(np.arcsin(((float(i-pos[1]))/radius)))*radius)
 
             if distance > maxdistance["up"]:
-                self.coin[range(pos[0]-maxdistance["up"], pos[0]+distance), i] = 1
+                self.coins[range(pos[0]-maxdistance["up"], pos[0]+distance), i] = 1
             elif distance > maxdistance["down"]:
-                self.coin[range(pos[0]-distance, pos[0]+maxdistance["down"]), i] = 1
+                self.coins[range(pos[0]-distance, pos[0]+maxdistance["down"]), i] = 1
             else:
-                self.coin[range(pos[0]-distance, pos[0]+distance), i] = 1
+                self.coins[range(pos[0]-distance, pos[0]+distance), i] = 1
 
-        self.table = self.table + self.coin
-        test = np.transpose(np.nonzero(np.invert(self.coin)))  #zum debuggen
-        test2 = self.coin
+        test = np.transpose(np.nonzero(np.invert(self.coins)))  #zum debuggen
+        test2 = self.coins
         return
 
     def find_new_position(self):
-        possible_pixel = np.transpose(np.nonzero(np.invert(self.table + self.border)))
+        possible_pixel = np.transpose(np.nonzero(np.invert(self.border + self.coins)))
         pos_index = randint(0, possible_pixel.size/2)
         coin_pos = possible_pixel[pos_index]
         return coin_pos
