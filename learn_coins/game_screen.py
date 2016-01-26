@@ -20,13 +20,11 @@ from random import random, randint
 from kivy.vector import Vector as Vec
 from kivy.clock import Clock
 from kivy.utils import platform
-
-
+import numpy as np
+import math
 
 class Goal(Widget):
     pass
-
-
 
 
 class Coin(Widget):
@@ -35,16 +33,77 @@ class Coin(Widget):
     vel = ListProperty()
     tmp_vec = ListProperty()
 
-    def set_coin(self, size):
+    def set_coin(self, size, pos):
         coin_worthes = [1,2,5,10,20,50,100,200]
         posible_coins = {1 : 0.7, 2 : 0.75, 5 : 0.8, 10 : 0.7, 20 : 0.75, 50 : 1.0, 100 : 0.93, 200 : 1.09}
         random_coin = randint(0, 7)
 
         self.worth = coin_worthes[random_coin]#.get(1,'not found')#randint(1,8)
-        self.size = (size/6)*(posible_coins.get(coin_worthes[random_coin])), (size/6)*(posible_coins.get(coin_worthes[random_coin]))
-        self.vel = [0,0]#[randint(1,5), randint(1,5)]
+        self.size = (min(size)/6)*(posible_coins.get(self.worth)), (min(size)/6)*(posible_coins.get(self.worth))
+        self.vel = [0, 0]#[randint(1,5), randint(1,5)]
+        self.center = int(pos[1]), int(pos[0])
+
         return self
 
+
+class Matrix(ObjectProperty):
+    def __init__(self, window_size):
+        self.window_size = window_size
+        self.table = np.zeros((window_size[0], window_size[1]), bool)
+        self.coin = np.zeros((window_size[0], window_size[1]), bool)
+        self.border = np.zeros((window_size[0], window_size[1]), bool)
+        self.max_coin_size = int(np.ceil(1.09*window_size[0]/6))     #TO DO connect with Variables in class method set_coin??
+
+    def set_border(self, coin_size):
+        self.border = np.zeros((self.window_size[0], self.window_size[1]), bool)
+        for i in range(0, self.window_size[0]):
+            if (i < (coin_size/2)) or (i > (self.window_size[0]-(coin_size/2))):
+                self.table[(i, range(0, int(self.window_size[1])))] = 1
+            else:
+                self.border[(i, range(0, int(coin_size/2)))] = 1
+                self.border[(i, range(int(self.window_size[1]*0.55), self.window_size[1]))] = 1
+        return
+
+    def set_coin(self, coin):
+        self.set_border(coin.size[0])
+        pos = self.find_new_position()
+        coin.set_coin(self.window_size, (pos[1], pos[0]))
+
+        radius = int((coin.size[0] + self.max_coin_size)/2)
+
+         # if pos is near matrix-border
+
+        maxdistance = { "left" : radius, "right" : radius, "up" : radius, "down" : radius}
+
+        if pos[0] - radius < 0:
+            maxdistance["up"] = radius - pos[0]
+        elif pos[0] + radius > self.window_size[0]:
+            maxdistance["down"] = self.window_size[0] - pos[0]
+        if pos[1] - radius < 0:
+            maxdistance["left"] = radius - pos[1]
+        elif pos[1] + radius > self.window_size[1]:
+            maxdistance["right"] = self.window_size[1] - pos[1]
+
+        for i in range(pos[1]-maxdistance["right"], pos[1]+maxdistance["left"]):
+            distance = int(np.cos(np.arcsin(((float(i-pos[1]))/radius)))*radius)
+
+            if distance > maxdistance["up"]:
+                self.coin[range(pos[0]-maxdistance["up"], pos[0]+distance), i] = 1
+            elif distance > maxdistance["down"]:
+                self.coin[range(pos[0]-distance, pos[0]+maxdistance["down"]), i] = 1
+            else:
+                self.coin[range(pos[0]-distance, pos[0]+distance), i] = 1
+
+        self.table = self.table + self.coin
+        test = np.transpose(np.nonzero(np.invert(self.coin)))  #zum debuggen
+        test2 = self.coin
+        return
+
+    def find_new_position(self):
+        possible_pixel = np.transpose(np.nonzero(np.invert(self.table + self.border)))
+        pos_index = randint(0, possible_pixel.size/2)
+        coin_pos = possible_pixel[pos_index]
+        return coin_pos
 
 
 class GameScreen(Screen):
@@ -54,23 +113,20 @@ class GameScreen(Screen):
     coins = ListProperty()
     sum = NumericProperty(0)
 
-
-
-
     def generate_random_coins(self):
         generated_coins = []
+        matrix = Matrix(Window.size)
+        coin_row = []
         for i in range(12):
             self.counter += 1
             coin = Coin()
-            coin_pos_X = randint(coin.size[0],Window.size[0]-coin.size[0])
-            coin_pos_Y = randint(coin.size[0], int(Window.size[1]/1.5-(coin.size[1])))
-            coin.set_coin(Window.size[0])
-            coin.center = coin_pos_X, coin_pos_Y
+            matrix.set_coin(coin)
             coin.counter = self.counter
             generated_coins.append(coin)
 
         for coin in generated_coins:
             self.add_widget(coin)
+
         self.coins = generated_coins
 
 
@@ -92,8 +148,6 @@ class GameScreen(Screen):
                 worth += coin.worth
         return worth
 
-
-
     def update(self,dt):
         for coin in self.coins:
             if coin.pos[0] <= 0 and coin.vel[0] < 0:
@@ -113,9 +167,6 @@ class GameScreen(Screen):
             coin.pos = Vec(coin.vel) + Vec(coin.pos)
             coin.vel = Vec(coin.vel) *0.87
             self.ids.sum_id.text = str(self.sum_coins_welth())
-
-
-
 
 
 
